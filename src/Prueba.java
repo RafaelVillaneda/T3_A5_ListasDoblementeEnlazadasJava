@@ -79,9 +79,15 @@ class ListaDoblementeEnlazada{
 		}
 	}
 	public void agregarElementoFinal(int dato) {
-		Nodo nuevoNodo=new Nodo(dato);
-		nodoFin.setNodoSiguiente(nuevoNodo);
-		nodoFin=nuevoNodo;
+		Nodo nuevo = new Nodo(dato);
+		
+		if(verificarVacia()) {
+			nodoInicio = nodoFin = nuevo;
+		}else {
+			nodoFin.setNodoSiguiente(nuevo);
+			nuevo.setNodoAnterior(nodoFin);
+			nodoFin = nuevo;
+		}
 	}
 	public void eliminarElementoInicio() {
 		if(verificarVacia()) {
@@ -99,23 +105,42 @@ class ListaDoblementeEnlazada{
 		if(verificarVacia()) {
 			System.out.println("No se puede eliminar lista Vacia");
 		}else if(nodoInicio==nodoFin) {
+			System.out.println("El dato eliminado es: "+nodoFin.getDato());
 			nodoInicio=nodoFin=null;
 		}else {
-			nodoFin=nodoFin.getNodoAnterior();
+			System.out.println("El dato eliminado es: "+nodoFin.getDato());
+			nodoFin = nodoFin.getNodoAnterior();
+			nodoFin.setNodoSiguiente(null);
 		}
 	}
-	public int eliminarDeterminadoElemento(int dato) {
+	public void eliminarDeterminadoElemento(int dato) {
 		if(verificarVacia()) {
 			System.out.println("Oh no se puede eliminar el dato ya que la lista esta vacia");
-			return -1;
 		}else if(nodoInicio==nodoFin && nodoInicio.getDato()==dato) {
+			System.out.println("Se elimino el dato");
 			nodoInicio=nodoFin=null;
-			return dato;
 		}else {
+			Nodo adelante = nodoInicio;
+			Nodo anterior = null;
+			
+			while(adelante!=null) {
+				if(adelante.getDato()!=dato) {
+					anterior=adelante;
+					adelante=adelante.getNodoSiguiente();
+				}else {
+					break;
+				}
+			}
+			
+			if(adelante!=null) {
+				adelante.getNodoSiguiente().setNodoAnterior(anterior);
+				anterior.setNodoSiguiente(adelante.getNodoSiguiente());
+				System.out.println("Se elimino el dato");
+			}
 			
 		}
-		return -1;
-	}
+		
+}
 	
 	public void mostrarElementos() {
 		Nodo nodoActual = nodoInicio;
@@ -154,7 +179,7 @@ public class Prueba {
 					System.out.println("A) Agregar al inicio");
 					System.out.println("B) Agregar al final");
 					System.out.println("C) Regresar al menu principal");
-					op2=entrada.nextLine();
+					op2=entrada.nextLine().toUpperCase();
 					
 					if(op2.equalsIgnoreCase("A")) {
 						lista.agregarAlInicio(dato);
@@ -165,7 +190,7 @@ public class Prueba {
 					}else {
 						System.out.println("Elge una opcion disponible");
 					}
-				}while(!(op2.equalsIgnoreCase("A")|| op2.equalsIgnoreCase("B")));
+				}while(!(op2.equalsIgnoreCase("A")|| op2.equalsIgnoreCase("B") || op2.equalsIgnoreCase("C")));
 				break;
 			case "B":
 				String opB="";
@@ -184,7 +209,7 @@ public class Prueba {
 						System.out.print("Ingresa el dato que deseas eliminar: ");
 						int d=entrada.nextInt();
 						entrada.nextLine();
-						
+						lista.eliminarDeterminadoElemento(d);
 					}else if(opB.equalsIgnoreCase("D")) {
 						break;
 					}else {
@@ -197,28 +222,13 @@ public class Prueba {
 				System.out.println();
 				break;
 			case "D":
-				System.out.println("Saliendo");
+				System.out.println("Saliendo...");
+				break;
 			default:
 				System.out.println("Porfavor elige una opcion disponible");
 				break;
 			}
 		}while(!op.equalsIgnoreCase("D"));
-		
-		lista.agregarAlInicio(10);
-		lista.agregarAlInicio(11);
-		lista.agregarAlInicio(13);
-		
-		lista.mostrarElementos();
-		System.out.println("--------------11");
-		lista.agregarElementoFinal(12);
-		lista.mostrarElementos();
-		System.out.println("--------------2");
-		lista.eliminarElementoInicio();
-		lista.mostrarElementos();
-		System.out.println("--------------3");
-		lista.eliminarElementoFinal();
-		lista.mostrarElementos();
-		
 		
 	}
 
